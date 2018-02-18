@@ -27,13 +27,21 @@ module.exports = function ({ types: t }) {
       Program(programPath) {
         programPath.traverse({
           Function: function (path) {
-            // Ignore if not a function or no function name exists
+            // Ignore if not a function or it is anonymous
             if (
-              !['FunctionDeclaration', 'FunctionExpression'].includes(path.node.type) ||
-              !path.node.id
+              ![
+                'ObjectMethod',
+                'FunctionDeclaration',
+                'FunctionExpression',
+              ].includes(path.node.type) ||
+              (!path.node.id && !path.node.key)
             ) return;
 
+            var name;
             var body;
+
+            if (path.node.id) name = path.node.id.name;
+            if (path.node.key) name = path.node.key.name;
 
             if (path.node.body && path.node.body.body) {
               body = path.node.body.body;
@@ -46,7 +54,6 @@ module.exports = function ({ types: t }) {
 
             if (hasTryStatement) return;
 
-            var name = path.node.id.name;
             var catchBlockIndex = -1;
 
             // If @onError exists in main block, move code to catch block
