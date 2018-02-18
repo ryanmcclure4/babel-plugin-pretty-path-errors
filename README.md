@@ -3,11 +3,11 @@
 > A plugin to wrap all function bodies in try/catch blocks and bubble up errors with a path derived from function names, providing a more effective way of locating the source of error
 
 ## Why?
-Many times you will have deeply nested function calls which will inevitably throw errors at some point or another. Transpiled code will frequently change the line number, character position, and function names within the stack traces of errors. This requres you to sift through the transpiled code in order to find the actual location of the error.
+In many cases you will have deeply nested function calls which will inevitably throw errors at some point or another. Transpiled code will frequently change the line number, character position, and function names within the stack traces of errors. This requres you to sift through the transpiled code in order to find the actual location of the error.
 
-Wouldn't life be easier if you just knew which function was called? Today is your lucky day! This plugin wraps all functions in try/catch blocks, bubbling up errors and supplying them with a _functionPath_ built from the function names, which you can then use to instantly locate the source of error.
+Wouldn't life be easier if you just knew which function was called? And which function called that function? Today is your lucky day! This plugin wraps all functions in try/catch blocks, bubbling up errors and supplying them with a _functionPath_ built from the function names, which you can then use to instantly locate the source of error.
 
-As an added bonus, the added try/catch prevents errors thrown in async/await from getting swallowed. This allows you to write your functions without having to worry about always surrounding all async blocks in a try/catch.
+As an added bonus, the added try/catch prevents errors thrown in async/await from getting swallowed. This allows you to write your functions without having to worry about always manually surrounding async blocks in a try/catch.
 
 ## Installation
 
