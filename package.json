@@ -1,7 +1,7 @@
 {
   "name": "babel-plugin-async-errors",
   "version": "1.0.0",
-  "description": "A babel plugin that wraps async-await functions in try-catch blocks and throws errors with pathnames built from the function names",
+  "description": "A plugin to wrap all function bodies in try/catch blocks and bubble up errors with a path derived from function names, providing a more effective way of location the source of error",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
