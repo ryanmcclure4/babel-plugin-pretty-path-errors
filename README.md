@@ -65,3 +65,23 @@ try {
   console.log(err.toString()); // 'Where was I thrown? | Location(foo->bar)'
 }
 ```
+
+## Custom catch block
+If you want to run a block of code after an error is thrown in your function, add it at the bottom of the function body preceeded by a comment with _@onError_
+
+```
+var success = 1;
+
+function bar() {
+  foo();
+
+  // @onError
+  success = 0;
+}
+
+try {
+  bar();
+} catch {
+  console.log(success); // 0
+}
+```
