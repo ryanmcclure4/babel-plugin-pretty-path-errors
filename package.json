@@ -1,0 +1,22 @@
+{
+  "name": "babel-plugin-async-errors",
+  "version": "1.0.0",
+  "description": "A babel plugin that wraps async-await functions in try-catch blocks and throws errors with pathnames built from the function names",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryanmcclure4/babel-plugin-pretty-path-errors.git"
+  },
+  "author": "Ryan McClure",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryanmcclure4/babel-plugin-pretty-path-errors/issues"
+  },
+  "homepage": "https://github.com/ryanmcclure4/babel-plugin-pretty-path-errors#readme",
+  "dependencies": {
+    "babylon": "^6.18.0"
+  }
+}
