@@ -1,6 +1,6 @@
 # babel-plugin-pretty-path-errors
 
-> A plugin to wrap all function bodies in try/catch blocks and bubble up errors with a path derived from function names, providing a more effective way of location the source of error
+> A plugin to wrap all function bodies in try/catch blocks and bubble up errors with a path derived from function names, providing a more effective way of locating the source of error
 
 ## Why?
 Many times you will have deeply nested function calls which will inevitably throw errors at some point or another. Transpiled code will frequently change the line number, character position, and function names within the stack traces of errors. This requres you to sift through the transpiled code in order to find the actual location of the error.
