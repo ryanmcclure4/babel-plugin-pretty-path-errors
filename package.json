@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-pretty-path-errors",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A plugin to wrap all function bodies in try/catch blocks and bubble up errors with a path derived from function names, providing a more effective way of locating the source of error",
   "main": "src/index.js",
   "scripts": {

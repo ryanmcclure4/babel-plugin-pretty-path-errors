@@ -27,7 +27,6 @@ module.exports = function ({ types: t }) {
       Program(programPath) {
         programPath.traverse({
           Function: function (path) {
-            console.log(path.node);
             // Ignore if not a function or it is anonymous
             if (
               ![
