@@ -29,7 +29,7 @@ module.exports = function ({ types: t }) {
           Function: function (path) {
             // Ignore if not a function or no function name exists
             if (
-              path.node.type !== 'FunctionDeclaration' ||
+              !['FunctionDeclaration', 'FunctionExpression'].includes(path.node.type) ||
               !path.node.id
             ) return;
 
