@@ -1,22 +1,26 @@
 var babylon = require('babylon');
 
+
 /**
  * Generates a catch block given a function name
  */
-var getCatchBlock = function (functionName) {
+var getCatchBlock = function (delimiter, functionName, handlerName = 'err') {
   return `
     var Err = require('babel-plugin-pretty-path-errors/src/Err.js');
     var path = '${functionName}';
 
-    if (err.name === 'PrettyPathError') {
-      path = path + ' -> ' + err.functionPath;
+    if (${handlerName}.name === 'PrettyPathError') {
+      path = path + '${delimiter}' + ${handlerName}.functionPath;
     }
 
-    throw new Err(err, path);
+    throw new Err(${handlerName}, path);
   `;
 };
 
-var insertTryStatement = function ({ path, body, name, t }) {
+/**
+ * Wraps node body in try/catch if this function doesn't have one
+ */
+var insertTryStatement = function ({ delimiter, path, body, name, t }) {
   var catchBlockIndex = -1;
   
   // If @onError exists in main block, move code to catch block
@@ -51,7 +55,7 @@ var insertTryStatement = function ({ path, body, name, t }) {
   }
 
   catchBody = catchBody.concat(
-    babylon.parse(getCatchBlock(name)).program.body
+    babylon.parse(getCatchBlock(delimiter, name)).program.body
   );
 
   path.node.body = t.blockStatement([
@@ -67,15 +71,22 @@ var insertTryStatement = function ({ path, body, name, t }) {
   ]);
 };
 
-var modifyTryStatement = function ({ path, body, name, existingTryStatement, t }) {
+/**
+ * Adds error handling if try/catch exists in function
+ */
+var modifyTryStatement = function ({ delimiter, path, body, name, existingTryStatement, t }) {
   const handlerBody = existingTryStatement.handler.body.body;
+  const handlerName = existingTryStatement.handler.param.name;
   const catchBody = handlerBody.concat(
-    babylon.parse(getCatchBlock(name)).program.body
+    babylon.parse(getCatchBlock(delimiter, name, handlerName)).program.body
   );
 
   existingTryStatement.handler.body = t.blockStatement(catchBody);
 };
 
+/**
+ * Visitor
+ */
 module.exports = function ({ types: t }) {
   return {
     visitor: {
@@ -84,7 +95,10 @@ module.exports = function ({ types: t }) {
        * Add Program visitor to traverse first, avoiding possibility of
        * function names being changed by other plugins
        */
-      Program(programPath) {
+      Program(programPath, state) {
+        // Function name delimiter
+        var delimiter = state.opts.delimiter || ' -> ';
+
         programPath.traverse({
           Function: function (path) {
             // Ignore if not a function or it is anonymous
@@ -103,8 +117,15 @@ module.exports = function ({ types: t }) {
 
             if (path.node.id) name = path.node.id.name;
             if (path.node.key) name = path.node.key.name;
+
+            // If this is a class method, prepend the class name
             if (path.node.type === 'ClassMethod') {
-              name = path.parentPath.container.id.name + ' -> ' + name;
+              name = path.parentPath.container.id.name + delimiter + name;
+            }
+
+            // IF this is an assignment expression, prepened the parent object name
+            if (path.parentPath.node.type === 'AssignmentExpression') {
+              name = path.parentPath.node.left.object.name + delimiter + name;
             }
 
             if (path.node.body && path.node.body.body) {
@@ -116,10 +137,12 @@ module.exports = function ({ types: t }) {
               return t.isTryStatement(body);
             });
 
+            var args =  { delimiter, path, name, body, existingTryStatement, t };
+
             if (existingTryStatement) {
-              modifyTryStatement({ path, name, body, existingTryStatement, t })
+              modifyTryStatement(args);
             } else {
-              insertTryStatement({ path, name, body, t });
+              insertTryStatement(args);
             }
           }
         });
