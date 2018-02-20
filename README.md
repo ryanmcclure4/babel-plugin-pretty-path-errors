@@ -117,7 +117,7 @@ try {
 ```
 
 ## Existing try/catch
-If you have an existing try/catch block in your code, error handling will be added to the end of the catch block
+If you have an existing try/catch block in your function, error handling will be added to the end of the catch block and your existing functionality won't be modified.
 
 ## Options
 The default delimiter used to build the function path is an arrow `->`, however you may specify a custom delimiter if desired:
